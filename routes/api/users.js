@@ -1,14 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const { check, validationResult } = require('express-validator/check');
-const User = require('../../models/User');
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
+const { check, validationResult } = require('express-validator/check');
+
+// Load User model
+const User = require('../../models/User');
 
 // @route   GET api/users
 // @desc    Test route
 // @access  Public
-// router.get('/', (req, res) => res.send('User route'));
+router.get('/', (req, res) => res.send('User route'));
 
 // @route   GET api/users
 // @desc    Register user
@@ -38,7 +40,9 @@ router.post(
       let user = await User.findOne({ email });
 
       if (user) {
-        res.status(400).json({ errors: [{ msg: 'User already exists' }] });
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'User already exists' }] });
       }
       // Get users gravatar
       const avatar = gravatar.url(email, {
@@ -65,8 +69,6 @@ router.post(
       console.error(err.message);
       res.status(500).send('Server error');
     }
-
-    res.send('User route');
   }
 );
 
